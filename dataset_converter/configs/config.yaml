@@ -1,0 +1,4 @@
+﻿app:
+  title: 图片处理软件v1.0
+  default_input_format: yolo
+  default_output_format: voc

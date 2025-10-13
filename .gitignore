@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual environments
+venv/
+.env/
+.venv/
+img/
+
+# IDE
+.vscode/
+.idea/
+
+# Data directories (avoid pushing large raw/output data)
+dataset_converter/data/input/
+dataset_converter/data/output/
+test_out/
+
+# Build / dist
+dist/
+build/
+
+# Logs
+*.log
+
+# Qt resources (compiled outputs)
+*.rcc
