@@ -26,5 +26,8 @@ build/
 # Logs
 *.log
 
+# SSH keys in workspace (do not track keys)
+.ssh/
+
 # Qt resources (compiled outputs)
 *.rcc
