@@ -44,10 +44,10 @@ class HomeWindow(QMainWindow):
         if menu_icon:
             item_split.setIcon(menu_icon)
         self.menu.addItem(item_split)
-        item_more = QListWidgetItem("其他功能（待定）")
+        item_aug = QListWidgetItem("数据增强")
         if menu_icon:
-            item_more.setIcon(menu_icon)
-        self.menu.addItem(item_more)
+            item_aug.setIcon(menu_icon)
+        self.menu.addItem(item_aug)
         outer.addWidget(self.menu)
 
         # 分隔线
@@ -59,11 +59,13 @@ class HomeWindow(QMainWindow):
         # 右侧内容区
         from .converter_panel import ConverterPanel
         from .splitting_panel import SplittingPanel
+        from .augmentation_panel import AugmentationPanel
         self.content = QWidget()
         content_layout = QVBoxLayout(self.content)
         content_layout.setContentsMargins(16, 16, 16, 16)
         self.converter_panel = ConverterPanel(self)
         self.splitting_panel = SplittingPanel(self)
+        self.augmentation_panel = AugmentationPanel(self)
         content_layout.addWidget(self.converter_panel)
         outer.addWidget(self.content)
 
@@ -83,8 +85,4 @@ class HomeWindow(QMainWindow):
         elif idx == 1:
             self.content.layout().addWidget(self.splitting_panel)
         else:
-            placeholder = QWidget()
-            ph_layout = QVBoxLayout(placeholder)
-            from PyQt5.QtWidgets import QLabel
-            ph_layout.addWidget(QLabel("功能暂未实现，敬请期待"))
-            self.content.layout().addWidget(placeholder)
+            self.content.layout().addWidget(self.augmentation_panel)
