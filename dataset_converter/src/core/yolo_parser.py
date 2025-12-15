@@ -62,7 +62,7 @@ class YOLOParser(BaseParser):
                     xmin = ymin = xmax = ymax = 0
                 boxes.append(BBox(xmin=xmin, ymin=ymin, xmax=xmax, ymax=ymax, label=label))
 
-            results.append(ImageAnnotation(image_path=img_fp, width=width, height=height, boxes=boxes))
+            results.append(ImageAnnotation(image_path=img_fp, width=width, height=height, boxes=boxes, polygons=None))
         return results
 
     def export(self, annotations: List[ImageAnnotation], output_dir: Path) -> None:

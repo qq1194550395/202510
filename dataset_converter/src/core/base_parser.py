@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from pathlib import Path
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 
 
 @dataclass
@@ -13,11 +13,18 @@ class BBox:
 
 
 @dataclass
+class Polygon:
+    points: List[float]  # [x1, y1, x2, y2, ..., xn, yn] 归一化坐标
+    label: str
+
+
+@dataclass
 class ImageAnnotation:
     image_path: Path
     width: int
     height: int
     boxes: List[BBox]
+    polygons: Optional[List[Polygon]] = None  # 分割标注
 
 
 class BaseParser:

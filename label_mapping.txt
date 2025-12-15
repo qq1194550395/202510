@@ -1,0 +1,2 @@
+move_machine 0
+open_machine 1

@@ -3,12 +3,14 @@ from typing import List, Dict, Optional
 
 from .base_parser import BaseParser, ImageAnnotation
 from .yolo_parser import YOLOParser
+from .yolo_seg_parser import YOLOSegParser
 from .voc_parser import VOCParser
 from .json_parser import JSONParser
 
 
 PARSERS: Dict[str, BaseParser] = {
     "yolo": YOLOParser(),
+    "yolo_seg": YOLOSegParser(),
     "voc": VOCParser(),
     "json": JSONParser(),
 }

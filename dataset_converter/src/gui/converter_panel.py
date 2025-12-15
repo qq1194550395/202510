@@ -39,25 +39,44 @@ class ConverterPanel(QWidget):
         layout.addLayout(path_bar)
 
         # 格式选择
-        fmt_bar = QHBoxLayout()
+        fmt_bar1 = QHBoxLayout()
+        fmt_bar2 = QHBoxLayout()
         self.label_fmt = QLabel("当前格式: YOLO → VOC（说明：JSON 导出为每图一个 .json）")
-        btn_yolo_to_voc = QPushButton("YOLO → VOC")
-        btn_voc_to_yolo = QPushButton("VOC → YOLO")
+        
+        # 第一行按钮
+        btn_yolo_to_voc = QPushButton("YOLO检测 → VOC")
+        btn_voc_to_yolo = QPushButton("VOC → YOLO检测")
         btn_json_to_voc = QPushButton("JSON → VOC")
-        btn_json_to_yolo = QPushButton("JSON → YOLO")
-        btn_yolo_to_json = QPushButton("YOLO → JSON")
+        btn_yolo_to_json = QPushButton("YOLO检测 → JSON")
         btn_yolo_to_voc.clicked.connect(lambda: self.set_formats("yolo", "voc"))
         btn_voc_to_yolo.clicked.connect(lambda: self.set_formats("voc", "yolo"))
         btn_json_to_voc.clicked.connect(lambda: self.set_formats("json", "voc"))
-        btn_json_to_yolo.clicked.connect(lambda: self.set_formats("json", "yolo"))
         btn_yolo_to_json.clicked.connect(lambda: self.set_formats("yolo", "json"))
-        fmt_bar.addWidget(self.label_fmt)
-        fmt_bar.addWidget(btn_yolo_to_voc)
-        fmt_bar.addWidget(btn_voc_to_yolo)
-        fmt_bar.addWidget(btn_json_to_voc)
-        fmt_bar.addWidget(btn_json_to_yolo)
-        fmt_bar.addWidget(btn_yolo_to_json)
-        layout.addLayout(fmt_bar)
+        
+        # 第二行按钮 - YOLO分割相关
+        btn_yolo_seg_to_json = QPushButton("YOLO分割 → JSON")
+        btn_json_to_yolo = QPushButton("JSON → YOLO检测")
+        btn_json_to_yolo_seg = QPushButton("JSON → YOLO分割")
+        btn_yolo_seg_to_yolo = QPushButton("YOLO分割 → YOLO检测")
+        btn_yolo_seg_to_json.clicked.connect(lambda: self.set_formats("yolo_seg", "json"))
+        btn_json_to_yolo.clicked.connect(lambda: self.set_formats("json", "yolo"))
+        btn_json_to_yolo_seg.clicked.connect(lambda: self.set_formats("json", "yolo_seg"))
+        btn_yolo_seg_to_yolo.clicked.connect(lambda: self.set_formats("yolo_seg", "yolo"))
+        
+        fmt_bar1.addWidget(self.label_fmt)
+        fmt_bar1.addWidget(btn_yolo_to_voc)
+        fmt_bar1.addWidget(btn_voc_to_yolo)
+        fmt_bar1.addWidget(btn_json_to_voc)
+        fmt_bar1.addWidget(btn_yolo_to_json)
+        
+        fmt_bar2.addWidget(QLabel("分割格式转换:"))
+        fmt_bar2.addWidget(btn_yolo_seg_to_json)
+        fmt_bar2.addWidget(btn_json_to_yolo)
+        fmt_bar2.addWidget(btn_json_to_yolo_seg)
+        fmt_bar2.addWidget(btn_yolo_seg_to_yolo)
+        
+        layout.addLayout(fmt_bar1)
+        layout.addLayout(fmt_bar2)
 
         # 标签字典与转换按钮、日志
         btn_convert = QPushButton("开始转换")
@@ -92,7 +111,18 @@ class ConverterPanel(QWidget):
     def set_formats(self, inp: str, outp: str):
         self.input_fmt = inp
         self.output_fmt = outp
-        self.label_fmt.setText(f"当前格式: {inp.upper()} → {outp.upper()}")
+        
+        # 格式名称映射
+        format_names = {
+            "yolo": "YOLO检测",
+            "yolo_seg": "YOLO分割", 
+            "voc": "VOC",
+            "json": "JSON"
+        }
+        
+        inp_name = format_names.get(inp, inp.upper())
+        outp_name = format_names.get(outp, outp.upper())
+        self.label_fmt.setText(f"当前格式: {inp_name} → {outp_name}")
 
     def append_log(self, msg: str):
         self.log_view.append(msg)
@@ -103,9 +133,23 @@ class ConverterPanel(QWidget):
             QMessageBox.warning(self, "提示", "请先选择输入与输出目录")
             return
         try:
-            self.append_log(f"开始转换: {self.input_fmt}  {self.output_fmt}")
+            format_names = {
+                "yolo": "YOLO检测",
+                "yolo_seg": "YOLO分割", 
+                "voc": "VOC",
+                "json": "JSON"
+            }
+            inp_name = format_names.get(self.input_fmt, self.input_fmt)
+            outp_name = format_names.get(self.output_fmt, self.output_fmt)
+            
+            self.append_log(f"开始转换: {inp_name} → {outp_name}")
             if self.output_fmt == "json":
                 self.append_log("导出说明：将为每张图片生成一个独立的 JSON 文件，命名为 <stem>.json")
+            elif self.input_fmt == "yolo_seg":
+                self.append_log("输入说明：YOLO分割格式支持矩形框(5个值)和多边形(>5个值)混合标注")
+            elif self.output_fmt == "yolo_seg":
+                self.append_log("输出说明：YOLO分割格式将保留原有的矩形框和多边形标注")
+                
             convert(self.input_dir, self.input_fmt, self.output_dir, self.output_fmt, label_map=self.label_map)
             self.append_log("转换完成")
             QMessageBox.information(self, "完成", "转换完成！")

@@ -1,0 +1,5 @@
+  0 fire
+  1 dust
+  2 move_machine
+  3 open_machine
+  4 close_machine
