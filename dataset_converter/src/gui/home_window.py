@@ -44,6 +44,10 @@ class HomeWindow(QMainWindow):
         if menu_icon:
             item_split.setIcon(menu_icon)
         self.menu.addItem(item_split)
+        item_analysis = QListWidgetItem("数据集分析")
+        if menu_icon:
+            item_analysis.setIcon(menu_icon)
+        self.menu.addItem(item_analysis)
         item_more = QListWidgetItem("其他功能（待定）")
         if menu_icon:
             item_more.setIcon(menu_icon)
@@ -59,11 +63,13 @@ class HomeWindow(QMainWindow):
         # 右侧内容区
         from .converter_panel import ConverterPanel
         from .splitting_panel import SplittingPanel
+        from .analysis_panel import AnalysisPanel
         self.content = QWidget()
         content_layout = QVBoxLayout(self.content)
         content_layout.setContentsMargins(16, 16, 16, 16)
         self.converter_panel = ConverterPanel(self)
         self.splitting_panel = SplittingPanel(self)
+        self.analysis_panel = AnalysisPanel(self)
         content_layout.addWidget(self.converter_panel)
         outer.addWidget(self.content)
 
@@ -72,16 +78,18 @@ class HomeWindow(QMainWindow):
         self.menu.setCurrentRow(0)
 
     def on_menu_change(self, idx: int):
-        # 简单切换：只有第一个功能已实现，其它显示占位
         # 清空右侧内容
         for i in range(self.content.layout().count()):
             item = self.content.layout().itemAt(i)
             if item and item.widget():
                 item.widget().setParent(None)
+        
         if idx == 0:
             self.content.layout().addWidget(self.converter_panel)
         elif idx == 1:
             self.content.layout().addWidget(self.splitting_panel)
+        elif idx == 2:
+            self.content.layout().addWidget(self.analysis_panel)
         else:
             placeholder = QWidget()
             ph_layout = QVBoxLayout(placeholder)
