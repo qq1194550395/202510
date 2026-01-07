@@ -489,13 +489,6 @@ convert(
 - [Pillow](https://pillow.readthedocs.io/) - Python图像处理库
 - [Material Design](https://material.io/design) - 现代化设计指南
 
-## 📞 联系方式
-
-如果您有问题或建议，请通过以下方式联系我们：
-
-- 📧 邮箱: your-email@example.com
-- 🐛 问题反馈: [GitHub Issues](https://github.com/your-username/dataset-converter/issues)
-- 💬 讨论交流: [GitHub Discussions](https://github.com/your-username/dataset-converter/discussions)
 
 ### 注意事项
 
@@ -960,13 +953,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [Pillow](https://pillow.readthedocs.io/) - Python imaging library
 - [Material Design](https://material.io/design) - Modern design guidelines
 
-## 📞 Contact
-
-If you have questions or suggestions, please contact us through:
-
-- 📧 Email: your-email@example.com
-- 🐛 Issues: [GitHub Issues](https://github.com/your-username/dataset-converter/issues)
-- 💬 Discussions: [GitHub Discussions](https://github.com/your-username/dataset-converter/discussions)
+[GitHub Discussions](https://github.com/your-username/dataset-converter/discussions)
 
 ### Important Notes
 
