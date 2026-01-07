@@ -22,6 +22,7 @@ class AppStyles:
         return f"""
         QMainWindow {{
             background-color: {AppStyles.BACKGROUND_COLOR};
+            font-family: "SimSun", "宋体", serif;
         }}
         
         QListWidget {{
@@ -30,6 +31,7 @@ class AppStyles:
             border-radius: 8px;
             padding: 8px;
             font-size: 14px;
+            font-family: "SimSun", "宋体", serif;
         }}
         
         QListWidget::item {{
@@ -60,7 +62,7 @@ class AppStyles:
         QWidget {{
             background-color: {AppStyles.BACKGROUND_COLOR};
             color: {AppStyles.TEXT_COLOR};
-            font-family: "Microsoft YaHei", "Segoe UI", Arial, sans-serif;
+            font-family: "SimSun", "宋体", serif;
             font-size: 12px;
         }}
         
@@ -72,6 +74,7 @@ class AppStyles:
             padding-top: 10px;
             font-weight: bold;
             font-size: 13px;
+            font-family: "SimSun", "宋体", serif;
         }}
         
         QGroupBox::title {{
@@ -115,6 +118,7 @@ class AppStyles:
                     padding: 8px 16px;
                     font-size: 12px;
                     font-weight: 500;
+                    font-family: "SimSun", "宋体", serif;
                     color: {AppStyles.TEXT_COLOR};
                 }}
                 
@@ -137,6 +141,7 @@ class AppStyles:
                     padding: 10px 20px;
                     font-size: 13px;
                     font-weight: bold;
+                    font-family: "SimSun", "宋体", serif;
                     color: white;
                 }}
                 
@@ -157,6 +162,7 @@ class AppStyles:
                     padding: 10px 20px;
                     font-size: 13px;
                     font-weight: bold;
+                    font-family: "SimSun", "宋体", serif;
                     color: white;
                 }}
                 
@@ -177,6 +183,7 @@ class AppStyles:
                     padding: 8px 16px;
                     font-size: 12px;
                     font-weight: 500;
+                    font-family: "SimSun", "宋体", serif;
                     color: white;
                 }}
                 
@@ -193,6 +200,7 @@ class AppStyles:
                     padding: 8px 16px;
                     font-size: 12px;
                     font-weight: 500;
+                    font-family: "SimSun", "宋体", serif;
                     color: white;
                 }}
                 
@@ -212,6 +220,7 @@ class AppStyles:
                 QLabel {{
                     color: {AppStyles.TEXT_COLOR};
                     font-size: 12px;
+                    font-family: "SimSun", "宋体", serif;
                 }}
             """,
             
@@ -220,6 +229,7 @@ class AppStyles:
                     color: {AppStyles.PRIMARY_COLOR};
                     font-size: 14px;
                     font-weight: bold;
+                    font-family: "SimSun", "宋体", serif;
                     padding: 5px;
                 }}
             """,
@@ -229,6 +239,7 @@ class AppStyles:
                     color: {AppStyles.SECONDARY_TEXT};
                     font-size: 11px;
                     font-style: italic;
+                    font-family: "SimSun", "宋体", serif;
                 }}
             """,
             
@@ -239,6 +250,7 @@ class AppStyles:
                     border-radius: 6px;
                     padding: 6px 10px;
                     font-size: 12px;
+                    font-family: "SimSun", "宋体", serif;
                 }}
             """
         }
@@ -254,7 +266,7 @@ class AppStyles:
             border: 2px solid {AppStyles.BORDER_COLOR};
             border-radius: 8px;
             padding: 8px;
-            font-family: "Consolas", "Monaco", monospace;
+            font-family: "SimSun", "宋体", serif;
             font-size: 11px;
             line-height: 1.4;
         }}
@@ -275,6 +287,7 @@ class AppStyles:
             text-align: center;
             font-size: 11px;
             font-weight: bold;
+            font-family: "SimSun", "宋体", serif;
         }}
         
         QProgressBar::chunk {{
@@ -293,6 +306,7 @@ class AppStyles:
             border-radius: 6px;
             padding: 6px 10px;
             font-size: 12px;
+            font-family: "SimSun", "宋体", serif;
         }}
         
         QComboBox:hover {{
@@ -318,6 +332,7 @@ class AppStyles:
         return f"""
         QCheckBox {{
             font-size: 12px;
+            font-family: "SimSun", "宋体", serif;
             color: {AppStyles.TEXT_COLOR};
             spacing: 8px;
         }}
@@ -350,6 +365,7 @@ class AppStyles:
             border-radius: 6px;
             padding: 6px;
             font-size: 12px;
+            font-family: "SimSun", "宋体", serif;
         }}
         
         QSpinBox:focus {{
