@@ -9,11 +9,15 @@ from PyQt5.QtWidgets import (
     QTextEdit,
     QFileDialog,
     QMessageBox,
+    QScrollArea,
+    QGroupBox,
+    QGridLayout,
 )
 
 from ..core.converter import convert
 from ..utils.logger import get_logger
 from ..utils.label_utils import parse_label_map_txt
+from .styles import AppStyles
 
 
 class ConverterPanel(QWidget):
@@ -21,80 +25,139 @@ class ConverterPanel(QWidget):
         super().__init__(parent)
         self.logger = get_logger()
 
-        layout = QVBoxLayout(self)
+        main_layout = QVBoxLayout(self)
+        
+        # 应用统一样式
+        self.setStyleSheet(AppStyles.get_panel_style())
 
-        # 输入输出路径
-        path_bar = QHBoxLayout()
+        # 输入输出路径 - 固定在顶部
+        path_group = QWidget()
+        path_layout = QVBoxLayout(path_group)
+        
+        # 输入目录
+        input_layout = QHBoxLayout()
         self.input_label = QLabel("输入目录: 未选择")
-        self.output_label = QLabel("输出目录: 未选择")
+        self.input_label.setWordWrap(True)
+        self.input_label.setStyleSheet(AppStyles.get_label_style("status"))
         btn_in = QPushButton("选择输入目录")
+        btn_in.setMaximumWidth(120)
+        btn_in.setStyleSheet(AppStyles.get_button_style("default"))
+        input_layout.addWidget(self.input_label, 1)
+        input_layout.addWidget(btn_in)
+        
+        # 输出目录
+        output_layout = QHBoxLayout()
+        self.output_label = QLabel("输出目录: 未选择")
+        self.output_label.setWordWrap(True)
+        self.output_label.setStyleSheet(AppStyles.get_label_style("status"))
         btn_out = QPushButton("选择输出目录")
+        btn_out.setMaximumWidth(120)
+        btn_out.setStyleSheet(AppStyles.get_button_style("default"))
+        
         btn_in.clicked.connect(self.choose_input)
         btn_out.clicked.connect(self.choose_output)
-        path_bar.addWidget(self.input_label)
-        path_bar.addWidget(btn_in)
-        path_bar.addSpacing(8)
-        path_bar.addWidget(self.output_label)
-        path_bar.addWidget(btn_out)
-        layout.addLayout(path_bar)
+        
+        path_layout.addLayout(input_layout)
+        path_layout.addLayout(output_layout)
+        main_layout.addWidget(path_group)
 
-        # 格式选择
-        fmt_bar1 = QHBoxLayout()
-        fmt_bar2 = QHBoxLayout()
-        self.label_fmt = QLabel("当前格式: YOLO → VOC（说明：JSON 导出为每图一个 .json）")
+        # 创建滚动区域
+        scroll_area = QScrollArea()
+        scroll_area.setWidgetResizable(True)
+        scroll_area.setVerticalScrollBarPolicy(2)  # 总是显示垂直滚动条
+        scroll_area.setHorizontalScrollBarPolicy(1)  # 根据需要显示水平滚动条
         
-        # 第一行按钮
-        btn_yolo_to_voc = QPushButton("YOLO检测 → VOC")
-        btn_voc_to_yolo = QPushButton("VOC → YOLO检测")
-        btn_json_to_voc = QPushButton("JSON → VOC")
-        btn_yolo_to_json = QPushButton("YOLO检测 → JSON")
-        btn_yolo_to_voc.clicked.connect(lambda: self.set_formats("yolo", "voc"))
-        btn_voc_to_yolo.clicked.connect(lambda: self.set_formats("voc", "yolo"))
-        btn_json_to_voc.clicked.connect(lambda: self.set_formats("json", "voc"))
-        btn_yolo_to_json.clicked.connect(lambda: self.set_formats("yolo", "json"))
-        
-        # 第二行按钮 - YOLO分割相关
-        btn_yolo_seg_to_json = QPushButton("YOLO分割 → JSON")
-        btn_json_to_yolo = QPushButton("JSON → YOLO检测")
-        btn_json_to_yolo_seg = QPushButton("JSON → YOLO分割")
-        btn_yolo_seg_to_yolo = QPushButton("YOLO分割 → YOLO检测")
-        btn_yolo_seg_to_json.clicked.connect(lambda: self.set_formats("yolo_seg", "json"))
-        btn_json_to_yolo.clicked.connect(lambda: self.set_formats("json", "yolo"))
-        btn_json_to_yolo_seg.clicked.connect(lambda: self.set_formats("json", "yolo_seg"))
-        btn_yolo_seg_to_yolo.clicked.connect(lambda: self.set_formats("yolo_seg", "yolo"))
-        
-        fmt_bar1.addWidget(self.label_fmt)
-        fmt_bar1.addWidget(btn_yolo_to_voc)
-        fmt_bar1.addWidget(btn_voc_to_yolo)
-        fmt_bar1.addWidget(btn_json_to_voc)
-        fmt_bar1.addWidget(btn_yolo_to_json)
-        
-        fmt_bar2.addWidget(QLabel("分割格式转换:"))
-        fmt_bar2.addWidget(btn_yolo_seg_to_json)
-        fmt_bar2.addWidget(btn_json_to_yolo)
-        fmt_bar2.addWidget(btn_json_to_yolo_seg)
-        fmt_bar2.addWidget(btn_yolo_seg_to_yolo)
-        
-        layout.addLayout(fmt_bar1)
-        layout.addLayout(fmt_bar2)
+        # 创建滚动内容容器
+        scroll_content = QWidget()
+        scroll_layout = QVBoxLayout(scroll_content)
 
-        # 标签字典与转换按钮、日志
-        btn_convert = QPushButton("开始转换")
-        btn_convert.clicked.connect(self.on_convert)
-        btn_label_map = QPushButton("加载标签字典")
-        btn_label_map.clicked.connect(self.on_load_label_map)
+        # 当前格式显示
+        self.label_fmt = QLabel("当前格式: YOLO检测 → VOC")
+        self.label_fmt.setWordWrap(True)
+        self.label_fmt.setStyleSheet(AppStyles.get_label_style("title"))
+        scroll_layout.addWidget(self.label_fmt)
+        
+        # 基础格式转换组
+        basic_group = self.create_conversion_group("基础格式转换", [
+            ("YOLO检测 → VOC", "yolo", "voc"),
+            ("VOC → YOLO检测", "voc", "yolo"),
+            ("YOLO检测 → JSON", "yolo", "json"),
+            ("JSON → YOLO检测", "json", "yolo"),
+            ("JSON → VOC", "json", "voc"),
+        ])
+        scroll_layout.addWidget(basic_group)
+        
+        # 分割格式转换组
+        seg_group = self.create_conversion_group("分割格式转换", [
+            ("YOLO分割 → JSON", "yolo_seg", "json"),
+            ("JSON → YOLO分割", "json", "yolo_seg"),
+            ("YOLO分割 → YOLO检测", "yolo_seg", "yolo"),
+        ])
+        scroll_layout.addWidget(seg_group)
+
+        # 工具按钮组
+        tools_group = self.create_tools_group()
+        scroll_layout.addWidget(tools_group)
+        
+        # 设置滚动内容
+        scroll_area.setWidget(scroll_content)
+        main_layout.addWidget(scroll_area)
+
+        # 日志输出 - 固定在底部
         self.log_view = QTextEdit()
         self.log_view.setReadOnly(True)
-        layout.addWidget(btn_label_map)
-        layout.addWidget(btn_convert)
-        layout.addWidget(QLabel("日志输出"))
-        layout.addWidget(self.log_view)
+        self.log_view.setMaximumHeight(150)  # 限制高度
+        self.log_view.setStyleSheet(AppStyles.get_textedit_style())
+        
+        log_label = QLabel("日志输出:")
+        log_label.setStyleSheet(AppStyles.get_label_style("subtitle"))
+        main_layout.addWidget(log_label)
+        main_layout.addWidget(self.log_view)
 
         self.input_dir = None
         self.output_dir = None
         self.input_fmt = "yolo"
         self.output_fmt = "voc"
         self.label_map = {}
+    
+    def create_conversion_group(self, title, conversions):
+        """创建转换按钮组"""
+        group = QGroupBox(title)
+        layout = QGridLayout(group)
+        
+        # 每行最多2个按钮，防止超出窗口
+        for i, (text, inp_fmt, out_fmt) in enumerate(conversions):
+            btn = QPushButton(text)
+            btn.setMaximumWidth(200)  # 限制按钮宽度
+            btn.setStyleSheet(AppStyles.get_button_style("default"))
+            btn.clicked.connect(lambda checked, i=inp_fmt, o=out_fmt: self.set_formats(i, o))
+            
+            row = i // 2
+            col = i % 2
+            layout.addWidget(btn, row, col)
+        
+        return group
+    
+    def create_tools_group(self):
+        """创建工具按钮组"""
+        group = QGroupBox("工具")
+        layout = QVBoxLayout(group)
+        
+        # 标签字典按钮
+        btn_label_map = QPushButton("加载标签字典")
+        btn_label_map.setMaximumWidth(200)
+        btn_label_map.setStyleSheet(AppStyles.get_button_style("warning"))
+        btn_label_map.clicked.connect(self.on_load_label_map)
+        layout.addWidget(btn_label_map)
+        
+        # 转换按钮
+        btn_convert = QPushButton("开始转换")
+        btn_convert.setMaximumWidth(200)
+        btn_convert.setStyleSheet(AppStyles.get_button_style("success"))
+        btn_convert.clicked.connect(self.on_convert)
+        layout.addWidget(btn_convert)
+        
+        return group
 
     def choose_input(self):
         d = QFileDialog.getExistingDirectory(self, "选择输入目录", str(Path.cwd()))

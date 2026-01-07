@@ -5,6 +5,7 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QListWidget, QListWidgetItem, QFrame
 
 from .main_window import MainWindow
+from .styles import AppStyles
 
 
 class HomeWindow(QMainWindow):
@@ -15,8 +16,11 @@ class HomeWindow(QMainWindow):
         if icon_path.exists():
             self.setWindowIcon(QIcon(str(icon_path)))
 
-        # 固定窗口尺寸，避免过小
-        self.setFixedSize(1024, 700)
+        # 设置窗口尺寸，适应更多内容
+        self.setFixedSize(1200, 800)
+        
+        # 应用统一样式
+        self.setStyleSheet(AppStyles.get_main_window_style())
 
         central = QWidget(self)
         self.setCentralWidget(central)
@@ -29,12 +33,7 @@ class HomeWindow(QMainWindow):
         self.menu = QListWidget()
         self.menu.setFixedWidth(260)
         self.menu.setIconSize(QSize(24, 24))
-        self.menu.setAlternatingRowColors(True)
-        self.menu.setStyleSheet(
-            "QListWidget{background:#f7f8fa;border:0;padding:6px;}"
-            "QListWidget::item{height:40px;padding:6px 10px;}"
-            "QListWidget::item:selected{background:#e8f0fe;color:#1a73e8;}"
-        )
+        # 移除旧的样式，使用统一样式
         menu_icon = QIcon(str(icon_path)) if icon_path.exists() else None
         item_conv = QListWidgetItem("数据集格式转换")
         if menu_icon:

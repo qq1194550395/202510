@@ -14,82 +14,131 @@ from PyQt5.QtWidgets import (
     QSpinBox,
     QLineEdit,
     QProgressBar,
+    QScrollArea,
+    QGroupBox,
+    QGridLayout,
 )
+
+from .styles import AppStyles
 
 
 class SplittingPanel(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        layout = QVBoxLayout(self)
+        main_layout = QVBoxLayout(self)
+        
+        # 应用统一样式
+        self.setStyleSheet(AppStyles.get_panel_style())
 
-        # 路径选择
-        path_bar = QHBoxLayout()
+        # 创建滚动区域
+        scroll_area = QScrollArea()
+        scroll_area.setWidgetResizable(True)
+        scroll_area.setVerticalScrollBarPolicy(2)
+        scroll_area.setHorizontalScrollBarPolicy(1)
+        
+        scroll_content = QWidget()
+        layout = QVBoxLayout(scroll_content)
+
+        # 路径选择组
+        path_group = QGroupBox("数据集路径")
+        path_layout = QVBoxLayout(path_group)
+        
+        # 输入路径
+        input_layout = QHBoxLayout()
         self.input_label = QLabel("数据集目录: 未选择")
-        self.output_label = QLabel("输出目录: 未选择")
+        self.input_label.setStyleSheet(AppStyles.get_label_style("status"))
         btn_in = QPushButton("选择数据集目录")
-        btn_out = QPushButton("选择输出目录")
+        btn_in.setStyleSheet(AppStyles.get_button_style("default"))
         btn_in.clicked.connect(self.choose_input)
+        input_layout.addWidget(self.input_label, 1)
+        input_layout.addWidget(btn_in)
+        
+        # 输出路径
+        output_layout = QHBoxLayout()
+        self.output_label = QLabel("输出目录: 未选择")
+        self.output_label.setStyleSheet(AppStyles.get_label_style("status"))
+        btn_out = QPushButton("选择输出目录")
+        btn_out.setStyleSheet(AppStyles.get_button_style("default"))
         btn_out.clicked.connect(self.choose_output)
-        path_bar.addWidget(self.input_label)
-        path_bar.addWidget(btn_in)
-        path_bar.addSpacing(8)
-        path_bar.addWidget(self.output_label)
-        path_bar.addWidget(btn_out)
-        layout.addLayout(path_bar)
+        output_layout.addWidget(self.output_label, 1)
+        output_layout.addWidget(btn_out)
+        
+        path_layout.addLayout(input_layout)
+        path_layout.addLayout(output_layout)
+        layout.addWidget(path_group)
 
-        # 比例设置
-        ratio_bar = QHBoxLayout()
-        ratio_bar.addWidget(QLabel("划分比例（%）:"))
-        ratio_bar.addSpacing(8)
-        ratio_bar.addWidget(QLabel("训练"))
+        # 比例设置组
+        ratio_group = QGroupBox("划分比例设置")
+        ratio_layout = QGridLayout(ratio_group)
+        
+        ratio_layout.addWidget(QLabel("训练集 (%):"), 0, 0)
         self.train_ratio = QSpinBox()
         self.train_ratio.setRange(0, 100)
         self.train_ratio.setValue(70)
-        ratio_bar.addWidget(self.train_ratio)
-        ratio_bar.addSpacing(12)
-        ratio_bar.addWidget(QLabel("验证"))
+        self.train_ratio.setStyleSheet(AppStyles.get_spinbox_style())
+        ratio_layout.addWidget(self.train_ratio, 0, 1)
+        
+        ratio_layout.addWidget(QLabel("验证集 (%):"), 0, 2)
         self.val_ratio = QSpinBox()
         self.val_ratio.setRange(0, 100)
         self.val_ratio.setValue(20)
-        ratio_bar.addWidget(self.val_ratio)
-        ratio_bar.addSpacing(12)
-        ratio_bar.addWidget(QLabel("测试"))
+        self.val_ratio.setStyleSheet(AppStyles.get_spinbox_style())
+        ratio_layout.addWidget(self.val_ratio, 0, 3)
+        
+        ratio_layout.addWidget(QLabel("测试集 (%):"), 1, 0)
         self.test_ratio = QSpinBox()
         self.test_ratio.setRange(0, 100)
         self.test_ratio.setValue(10)
-        # 测试集比例自动计算，禁用手动输入
         self.test_ratio.setEnabled(False)
-        ratio_bar.addWidget(self.test_ratio)
-        layout.addLayout(ratio_bar)
-
-        # 随机种子设置
-        seed_bar = QHBoxLayout()
-        seed_bar.addWidget(QLabel("随机种子"))
+        self.test_ratio.setStyleSheet(AppStyles.get_spinbox_style())
+        ratio_layout.addWidget(self.test_ratio, 1, 1)
+        
+        # 随机种子
+        ratio_layout.addWidget(QLabel("随机种子:"), 1, 2)
         self.seed_edit = QLineEdit()
         self.seed_edit.setPlaceholderText("例如：42，不填则随机")
-        seed_bar.addWidget(self.seed_edit)
-        layout.addLayout(seed_bar)
+        ratio_layout.addWidget(self.seed_edit, 1, 3)
+        
+        layout.addWidget(ratio_group)
 
-        # 操作与日志
-        # 操作区：验证 + 划分
-        op_bar = QHBoxLayout()
+        # 操作按钮组
+        op_group = QGroupBox("操作")
+        op_layout = QHBoxLayout(op_group)
+        
         btn_validate = QPushButton("验证数据集")
+        btn_validate.setStyleSheet(AppStyles.get_button_style("primary"))
         btn_validate.clicked.connect(self.on_validate)
+        
         btn_split = QPushButton("开始划分")
+        btn_split.setStyleSheet(AppStyles.get_button_style("success"))
         btn_split.clicked.connect(self.on_split)
-        op_bar.addWidget(btn_validate)
-        op_bar.addWidget(btn_split)
-        self.log_view = QTextEdit()
-        self.log_view.setReadOnly(True)
-        # 进度条
+        
+        op_layout.addWidget(btn_validate)
+        op_layout.addWidget(btn_split)
+        layout.addWidget(op_group)
+        
+        # 设置滚动内容
+        scroll_area.setWidget(scroll_content)
+        main_layout.addWidget(scroll_area)
+
+        # 进度条 - 固定在底部
         self.progress = QProgressBar()
         self.progress.setMinimum(0)
         self.progress.setMaximum(100)
-        layout.addLayout(op_bar)
-        layout.addWidget(self.progress)
-        layout.addWidget(QLabel("划分日志"))
-        layout.addWidget(self.log_view)
+        self.progress.setStyleSheet(AppStyles.get_progressbar_style())
+        main_layout.addWidget(self.progress)
+        
+        # 日志输出 - 固定在底部
+        self.log_view = QTextEdit()
+        self.log_view.setReadOnly(True)
+        self.log_view.setMaximumHeight(150)
+        self.log_view.setStyleSheet(AppStyles.get_textedit_style())
+        
+        log_label = QLabel("划分日志:")
+        log_label.setStyleSheet(AppStyles.get_label_style("subtitle"))
+        main_layout.addWidget(log_label)
+        main_layout.addWidget(self.log_view)
 
         self.input_dir = None
         self.output_dir = None
