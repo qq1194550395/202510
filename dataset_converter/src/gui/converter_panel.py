@@ -53,6 +53,8 @@ class ConverterPanel(QWidget):
         btn_out = QPushButton("选择输出目录")
         btn_out.setMaximumWidth(120)
         btn_out.setStyleSheet(AppStyles.get_button_style("default"))
+        output_layout.addWidget(self.output_label, 1)
+        output_layout.addWidget(btn_out)
         
         btn_in.clicked.connect(self.choose_input)
         btn_out.clicked.connect(self.choose_output)
