@@ -289,7 +289,7 @@ class SimpleVisualizer:
                 
                 <div class="footer">
                     <p>📅 报告生成时间: <span id="current-time"></span></p>
-                    <p>🛠️ 由数据集转换工具生成</p>
+                    <p>🛠️ 由DataForge生成</p>
                 </div>
             </div>
             

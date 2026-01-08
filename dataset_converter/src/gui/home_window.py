@@ -11,7 +11,7 @@ from .styles import AppStyles
 class HomeWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("数据集转换工具 v2.0")
+        self.setWindowTitle("DataForge v2.0")
         icon_path = Path(__file__).parent.parent.parent / "resources" / "icon.png"
         if icon_path.exists():
             self.setWindowIcon(QIcon(str(icon_path)))

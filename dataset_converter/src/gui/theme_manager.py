@@ -15,7 +15,7 @@ class ThemeManager(QObject):
     
     def __init__(self):
         super().__init__()
-        self.settings = QSettings("DatasetConverter", "Theme")
+        self.settings = QSettings("DataForge", "Theme")
         self.current_theme = self.settings.value("current_theme", "light")
         self.themes = self._load_themes()
     
