@@ -306,6 +306,7 @@ class ThemeManager(QObject):
             border-radius: {config['border_radius']}px;
             padding: {spacing['normal']}px;
             font-size: {fonts['size_normal']}px;
+            outline: none;
         }}
         
         QListWidget::item {{
@@ -313,15 +314,25 @@ class ThemeManager(QObject):
             padding: {spacing['normal']}px {spacing['large']}px;
             border-radius: {config['border_radius'] // 2}px;
             margin: 2px 0px;
+            outline: none;
         }}
         
         QListWidget::item:selected {{
             background-color: {colors['primary']};
             color: white;
+            outline: none;
         }}
         
         QListWidget::item:hover {{
             background-color: {colors['hover']};
+        }}
+        
+        QListWidget::item:focus {{
+            outline: none;
+        }}
+        
+        QListWidget:focus {{
+            outline: none;
         }}
         
         /* 文本编辑框 */
@@ -487,6 +498,70 @@ class ThemeManager(QObject):
         QStatusBar {{
             background-color: {colors['card']};
             border-top: 1px solid {colors['border']};
+        }}
+        
+        /* 选项卡控件 */
+        QTabWidget {{
+            background-color: {colors['background']};
+            border: none;
+        }}
+        
+        QTabWidget::pane {{
+            background-color: {colors['card']};
+            border: 2px solid {colors['border']};
+            border-radius: {config['border_radius']}px;
+            margin-top: -1px;
+        }}
+        
+        QTabWidget::tab-bar {{
+            alignment: left;
+        }}
+        
+        QTabBar {{
+            background-color: transparent;
+            outline: none;
+        }}
+        
+        QTabBar::tab {{
+            background-color: {colors['background']};
+            border: 2px solid {colors['border']};
+            border-bottom: none;
+            border-radius: {config['border_radius']}px {config['border_radius']}px 0px 0px;
+            padding: {spacing['normal']}px {spacing['large']}px;
+            margin-right: 2px;
+            font-size: {fonts['size_normal']}px;
+            color: {colors['text']};
+            outline: none;
+        }}
+        
+        QTabBar::tab:selected {{
+            background-color: {colors['card']};
+            border-color: {colors['primary']};
+            color: {colors['primary']};
+            font-weight: bold;
+        }}
+        
+        QTabBar::tab:hover {{
+            background-color: {colors['hover']};
+            border-color: {colors['primary']};
+        }}
+        
+        QTabBar::tab:focus {{
+            outline: none;
+            border: none;
+        }}
+        
+        /* 移除所有焦点虚框 */
+        QTabWidget:focus {{
+            outline: none;
+        }}
+        
+        QTabBar:focus {{
+            outline: none;
+        }}
+        
+        QTabBar::tab:focus {{
+            outline: none;
         }}
         
         /* 分隔符 */

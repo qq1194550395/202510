@@ -19,8 +19,9 @@ class HomeWindow(QMainWindow):
         # 设置窗口尺寸，适应更多内容
         self.setFixedSize(1200, 800)
         
-        # 应用统一样式
-        self.setStyleSheet(AppStyles.get_main_window_style())
+        # 应用主题管理器样式
+        from .theme_manager import theme_manager
+        self.setStyleSheet(theme_manager.generate_stylesheet())
 
         central = QWidget(self)
         self.setCentralWidget(central)
@@ -33,7 +34,7 @@ class HomeWindow(QMainWindow):
         self.menu = QListWidget()
         self.menu.setFixedWidth(260)
         self.menu.setIconSize(QSize(24, 24))
-        # 移除旧的样式，使用统一样式
+        
         menu_icon = QIcon(str(icon_path)) if icon_path.exists() else None
         
         # 添加功能菜单项
@@ -127,21 +128,22 @@ class HomeWindow(QMainWindow):
         panel = QWidget()
         layout = QVBoxLayout(panel)
         
-        # 应用样式
-        panel.setStyleSheet(AppStyles.get_panel_style())
+        # 应用主题管理器样式
+        from .theme_manager import theme_manager
+        panel.setStyleSheet(theme_manager.generate_stylesheet())
         
         # 标题
         title = QLabel("数据可视化")
-        title.setStyleSheet(AppStyles.get_label_style("title"))
+        title.setProperty("labelType", "title")
         layout.addWidget(title)
         
         # 数据集选择
         dataset_layout = QHBoxLayout()
         self.viz_dataset_label = QLabel("数据集: 未选择")
-        self.viz_dataset_label.setStyleSheet(AppStyles.get_label_style("status"))
+        self.viz_dataset_label.setProperty("labelType", "status")
         
         btn_select_dataset = QPushButton("选择数据集")
-        btn_select_dataset.setStyleSheet(AppStyles.get_button_style("default"))
+        btn_select_dataset.setProperty("buttonType", "default")
         btn_select_dataset.clicked.connect(self.select_visualization_dataset)
         
         dataset_layout.addWidget(self.viz_dataset_label, 1)
@@ -156,13 +158,13 @@ class HomeWindow(QMainWindow):
         
         # 统计仪表板按钮
         btn_dashboard = QPushButton("生成统计仪表板")
-        btn_dashboard.setStyleSheet(AppStyles.get_button_style("primary"))
+        btn_dashboard.setProperty("buttonType", "primary")
         btn_dashboard.clicked.connect(self.create_dashboard)
         viz_layout.addWidget(btn_dashboard, 0, 0)
         
         # 交互式可视化按钮
         btn_interactive = QPushButton("生成交互式图表")
-        btn_interactive.setStyleSheet(AppStyles.get_button_style("success"))
+        btn_interactive.setProperty("buttonType", "success")
         btn_interactive.clicked.connect(self.create_interactive_viz)
         viz_layout.addWidget(btn_interactive, 0, 1)
         
@@ -177,7 +179,7 @@ class HomeWindow(QMainWindow):
         
         # 结果显示
         self.viz_result_label = QLabel("请选择数据集并生成可视化")
-        self.viz_result_label.setStyleSheet(AppStyles.get_label_style("subtitle"))
+        self.viz_result_label.setProperty("labelType", "subtitle")
         layout.addWidget(self.viz_result_label)
         
         layout.addStretch()
