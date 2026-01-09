@@ -202,6 +202,35 @@ print('安装验证完成！')
 "
 ```
 
+### 故障排除
+
+#### 常见问题解决
+
+**Q: 数据可视化时程序闪退**
+**A**: 确保数据集符合标准目录结构，检查图片和标签文件是否完整
+```bash
+# 检查数据集结构
+数据集名称/
+├── images/train/  # 确保有图片文件
+├── images/test/
+├── images/val/
+├── labels/train/  # 确保有对应的标签文件
+├── labels/test/
+└── labels/val/
+```
+
+**Q: 统计图表中文显示为方块**
+**A**: 系统缺少中文字体，程序会自动尝试多种字体，如仍有问题请安装SimSun字体
+
+**Q: 数据搜索显示0个标注**
+**A**: 检查数据集是否使用标准目录结构，标签文件是否与图片文件名匹配
+
+**Q: 数据集分析无结果**
+**A**: 确保选择的是数据集根目录（包含images和labels文件夹），而不是子目录
+
+**Q: 界面显示不完整或有滚动问题**
+**A**: 调整窗口大小或使用全屏模式，程序支持响应式布局
+
 ## 📁 项目结构
 
 ```
@@ -276,16 +305,43 @@ dataset_converter/
 
 ### 数据准备
 
+#### 标准数据集目录结构
+```
+my_dataset/                    # 数据集根目录
+├── images/                    # 图片目录
+│   ├── train/                 # 训练集图片
+│   │   ├── img001.jpg
+│   │   ├── img002.jpg
+│   │   └── ...
+│   ├── test/                  # 测试集图片
+│   │   ├── img101.jpg
+│   │   └── ...
+│   └── val/                   # 验证集图片
+│       ├── img201.jpg
+│       └── ...
+└── labels/                    # 标签目录
+    ├── train/                 # 训练集标签
+    │   ├── img001.txt         # 与图片同名
+    │   ├── img002.txt
+    │   └── ...
+    ├── test/                  # 测试集标签
+    │   ├── img101.txt
+    │   └── ...
+    └── val/                   # 验证集标签
+        ├── img201.txt
+        └── ...
+```
+
 #### YOLO检测格式示例
 ```
-# 文件: image1.txt
-0 0.5 0.5 0.3 0.4
-1 0.2 0.3 0.1 0.2
+# 文件: labels/train/img001.txt
+0 0.5 0.5 0.3 0.4              # 类别0: 中心点(0.5,0.5), 宽高(0.3,0.4)
+1 0.2 0.3 0.1 0.2              # 类别1: 中心点(0.2,0.3), 宽高(0.1,0.2)
 ```
 
 #### YOLO分割格式示例
 ```
-# 文件: image2.txt
+# 文件: labels/train/img002.txt
 0 0.5 0.5 0.3 0.4                           # 矩形框
 1 0.1 0.1 0.2 0.1 0.2 0.2 0.1 0.2           # 四边形
 2 0.7 0.7 0.8 0.7 0.8 0.8 0.7 0.8 0.75 0.75 # 五边形
@@ -299,32 +355,34 @@ dataset_converter/
    ```
 
 2. **选择功能**
+   - 点击左侧导航栏选择功能模块
+
+3. **数据集格式转换**
    - 点击"数据集格式转换"
+   - 选择输入目录（数据集根目录，包含images和labels文件夹）
+   - 选择输出目录
+   - 选择转换格式并点击对应按钮
 
-3. **设置路径**
-   - 点击"选择输入目录" - 选择包含标注文件的目录
-   - 点击"选择输出目录" - 选择转换结果保存目录
+4. **数据集可视化**
+   - 点击"数据集可视化"
+   - 选择数据集根目录
+   - 点击"生成统计仪表板"查看详细分析
 
-4. **选择转换格式**
-   - **检测格式转换**: 使用第一行按钮
-     - YOLO检测 → VOC
-     - VOC → YOLO检测
-     - JSON → VOC
-     - YOLO检测 → JSON
-   
-   - **分割格式转换**: 使用第二行按钮
-     - YOLO分割 → JSON
-     - JSON → YOLO检测
-     - JSON → YOLO分割
-     - YOLO分割 → YOLO检测
+5. **数据搜索**
+   - 点击"数据搜索"
+   - 选择数据集目录
+   - 设置筛选条件
+   - 点击"开始搜索"并可导出结果
 
-5. **可选: 加载标签字典**
-   - 点击"加载标签字典"
-   - 选择标签映射文件 (格式: `类别名 类别ID`)
+6. **数据集分析**
+   - 点击"数据集分析"
+   - 选择数据集目录
+   - 使用各种分析功能（统计、验证、增强等）
 
-6. **开始转换**
-   - 点击"开始转换"
-   - 查看日志输出了解转换进度
+7. **设置主题**
+   - 点击"设置"
+   - 在主题选项卡中选择喜欢的主题
+   - 点击"应用主题"
 
 ### 基本转换
 1. 启动程序，选择"数据集格式转换"
@@ -400,6 +458,179 @@ convert(
 - **实时反馈**: 详细的日志输出和进度显示
 
 ## 📝 更新日志
+
+### [2.1.0] - 2025-01-09
+
+#### 🎉 重大更新
+- **应用重命名**: 从"数据集转换工具"更名为"DataForge"，体现专业的数据锻造理念
+- **标准目录结构**: 统一采用 `images/` 和 `labels/` 的标准数据集结构，支持 `train/test/val` 子集
+- **智能格式检测**: 自动识别数据集格式，减少用户操作复杂度
+- **主题系统**: 完整的主题管理系统，支持4种内置主题
+- **界面优化**: 移除所有焦点虚线框，提供更清洁的视觉体验
+
+#### ✨ 新增功能
+
+**数据集验证与管理**
+- 新增数据集验证器 (`dataset_validator.py`)，支持标准目录结构验证
+- 智能格式检测，自动识别YOLO、VOC、JSON等格式
+- 数据集健康度评分系统，全面评估数据质量
+- 标准目录结构创建工具
+
+**增强的数据可视化**
+- 双重可视化系统：`EnhancedVisualizer` (matplotlib) 和 `SimpleVisualizer` (HTML/Plotly)
+- 9图表统计仪表板：类别分布、尺寸统计、密度热力图等
+- 交互式HTML报告，支持响应式设计
+- 专业级数据分析图表，完美支持中文字体显示
+
+**数据搜索与过滤**
+- 全新的数据搜索面板 (`search_panel.py`)
+- 多维度筛选：文件名、类别、尺寸、标注数量
+- 筛选结果导出功能，支持实际文件复制
+- 详细统计报告生成和保存
+
+**主题与界面优化**
+- 完整的主题管理系统 (`theme_manager.py`)
+- 4种内置主题：浅色、深色、蓝色、绿色
+- 设置面板 (`settings_panel.py`) 支持主题切换和界面配置
+- 统一的Material Design风格，使用SimSun(宋体)字体
+
+#### 🔧 重大改进
+
+**标准目录结构支持**
+- 所有解析器完全适配新的标准目录结构
+- 支持 `train/test/val` 子集自动识别和处理
+- 图片和标签文件分离管理，提高数据组织效率
+- 跨子集的统一处理和验证机制
+
+**用户体验优化**
+- 移除所有界面焦点虚线框（QTabWidget、QListWidget等）
+- 中文字体完美支持，解决matplotlib图表文字显示为正方形的问题
+- 响应式布局改进，支持滚动和动态调整
+- 统一的错误处理和用户反馈机制
+
+**功能完善**
+- 数据集分析功能完全重构，支持标准目录结构
+- 数据搜索功能修复，正确显示标注数量和统计信息
+- 可视化功能增强，支持中文标题和标签，添加字体缓存刷新
+- 所有导出功能适配新的数据结构
+
+**技术架构升级**
+- 统一的样式管理系统，替代旧的AppStyles
+- 模块化的主题系统，支持动态切换
+- 改进的错误处理和调试信息
+- 更好的跨平台兼容性和字体支持
+
+#### 🐛 修复问题
+- **数据可视化闪退**: 修复选择数据集后程序闪退的问题，添加延迟初始化和错误处理
+- **搜索功能零标注**: 修复数据搜索功能显示0个标注的问题，更新为新的验证系统
+- **分析功能无结果**: 修复数据集分析功能无结果的问题，完全适配标准目录结构
+- **中文字体显示**: 修复统计仪表板中文字显示为正方形的问题，添加跨平台字体配置
+- **界面焦点框**: 移除所有界面焦点虚线框，提供更清洁的视觉体验
+- **目录结构适配**: 修复所有功能对新标准目录结构的适配问题
+
+#### 📊 数据集格式规范
+
+**标准目录结构**
+```
+数据集名称/
+├── images/
+│   ├── train/          # 训练集图片
+│   ├── test/           # 测试集图片
+│   └── val/            # 验证集图片
+└── labels/
+    ├── train/          # 训练集标签
+    ├── test/           # 测试集标签
+    └── val/            # 验证集标签
+```
+
+**支持的格式**
+- **图片格式**: .jpg, .jpeg, .png, .bmp, .tiff, .webp
+- **标签格式**: 
+  - YOLO: .txt (归一化坐标)
+  - VOC: .xml (Pascal VOC格式)
+  - JSON: .json (自定义JSON格式)
+
+#### 🎨 界面改进
+- 应用名称更新为"DataForge v2.0"
+- 统一的SimSun(宋体)字体支持，解决中文显示问题
+- 4种主题可选：浅色、深色、蓝色、绿色
+- 移除所有焦点虚线框，包括选项卡和列表控件
+- 改进的按钮和控件样式，更现代化的视觉效果
+
+#### 📋 使用说明更新
+
+**新的数据集准备方式**
+1. 创建主数据集文件夹（如 `my_dataset`）
+2. 在其中创建 `images` 和 `labels` 两个子文件夹
+3. 在每个子文件夹中创建 `train`、`test`、`val` 子目录
+4. 将对应的图片和标签文件放入相应目录
+5. 确保图片和标签文件名一致（扩展名不同）
+
+**功能使用建议**
+- 使用"数据集可视化"前，确保数据集符合标准目录结构
+- 利用"数据搜索"功能快速筛选和导出特定条件的数据
+- 通过"数据集分析"获取详细的数据质量报告
+- 在"设置"中选择合适的主题以获得最佳视觉体验
+
+### [2.0.0] - 2024-01-07
+
+#### 🎉 重大更新
+- 完全重构的现代化界面设计
+- 新增YOLO分割格式支持
+- 完整的数据集分析和处理功能
+
+#### ✨ 新增功能
+
+**格式转换**
+- 新增YOLO分割格式解析器 (`yolo_seg_parser.py`)
+- 支持矩形框和多边形混合标注
+- 扩展JSON解析器支持分割标注
+- 新增12种转换路径
+
+**数据分析**
+- 数据集统计分析器 (`dataset_analyzer.py`)
+- 数据质量验证器 (`dataset_validator.py`)
+- 标注可视化器 (`annotation_visualizer.py`)
+- 数据集比较器 (`dataset_comparator.py`)
+- HTML报告生成功能
+
+**数据处理**
+- 自动修复器 (`annotation_fixer.py`)
+- 数据增强器 (`data_augmentation.py`)
+- 数据集整理器 (`dataset_organizer.py`)
+- 多格式导出器 (`dataset_exporter.py`)
+
+**界面优化**
+- 统一样式管理系统 (`styles.py`)
+- Material Design风格界面
+- 响应式布局和滚动支持
+- 三个主要功能面板：转换、分析、分割
+
+#### 🔧 改进
+
+**用户体验**
+- 重新设计的主窗口布局
+- 颜色编码的功能按钮
+- 实时进度显示和日志输出
+- 直观的状态反馈
+
+**技术架构**
+- 模块化的核心功能设计
+- 统一的解析器接口
+- 可扩展的插件架构
+- 改进的错误处理机制
+
+**性能优化**
+- 优化大文件处理性能
+- 改进内存使用效率
+- 支持批量操作
+- 异步处理支持
+
+#### 🐛 修复
+- 修复YOLO坐标解析精度问题
+- 修复JSON文件编码问题
+- 修复界面在不同分辨率下的显示问题
+- 修复文件路径处理的跨平台兼容性
 
 ### [2.0.0] - 2024-01-07
 
@@ -666,6 +897,35 @@ print('Installation verification complete!')
 "
 ```
 
+### Troubleshooting
+
+#### Common Issues Resolution
+
+**Q: Program crashes during data visualization**
+**A**: Ensure dataset follows standard directory structure, check if image and label files are complete
+```bash
+# Check dataset structure
+dataset_name/
+├── images/train/  # Ensure image files exist
+├── images/test/
+├── images/val/
+├── labels/train/  # Ensure corresponding label files exist
+├── labels/test/
+└── labels/val/
+```
+
+**Q: Chinese text displays as squares in charts**
+**A**: System lacks Chinese fonts, program will automatically try multiple fonts, install SimSun font if issues persist
+
+**Q: Data search shows 0 annotations**
+**A**: Check if dataset uses standard directory structure, ensure label files match image filenames
+
+**Q: Dataset analysis shows no results**
+**A**: Ensure you select the dataset root directory (containing images and labels folders), not subdirectories
+
+**Q: Interface display incomplete or scroll issues**
+**A**: Adjust window size or use fullscreen mode, program supports responsive layout
+
 ## 📁 Project Structure
 
 ```
@@ -740,16 +1000,43 @@ dataset_converter/
 
 ### Data Preparation
 
+#### Standard Dataset Directory Structure
+```
+my_dataset/                    # Dataset root directory
+├── images/                    # Images directory
+│   ├── train/                 # Training set images
+│   │   ├── img001.jpg
+│   │   ├── img002.jpg
+│   │   └── ...
+│   ├── test/                  # Test set images
+│   │   ├── img101.jpg
+│   │   └── ...
+│   └── val/                   # Validation set images
+│       ├── img201.jpg
+│       └── ...
+└── labels/                    # Labels directory
+    ├── train/                 # Training set labels
+    │   ├── img001.txt         # Same name as image
+    │   ├── img002.txt
+    │   └── ...
+    ├── test/                  # Test set labels
+    │   ├── img101.txt
+    │   └── ...
+    └── val/                   # Validation set labels
+        ├── img201.txt
+        └── ...
+```
+
 #### YOLO Detection Format Example
 ```
-# File: image1.txt
-0 0.5 0.5 0.3 0.4
-1 0.2 0.3 0.1 0.2
+# File: labels/train/img001.txt
+0 0.5 0.5 0.3 0.4              # Class 0: center(0.5,0.5), size(0.3,0.4)
+1 0.2 0.3 0.1 0.2              # Class 1: center(0.2,0.3), size(0.1,0.2)
 ```
 
 #### YOLO Segmentation Format Example
 ```
-# File: image2.txt
+# File: labels/train/img002.txt
 0 0.5 0.5 0.3 0.4                           # Bounding box
 1 0.1 0.1 0.2 0.1 0.2 0.2 0.1 0.2           # Quadrilateral
 2 0.7 0.7 0.8 0.7 0.8 0.8 0.7 0.8 0.75 0.75 # Pentagon
@@ -763,32 +1050,34 @@ dataset_converter/
    ```
 
 2. **Select function**
+   - Click on the left navigation bar to select function modules
+
+3. **Dataset Format Conversion**
    - Click "Dataset Format Conversion"
+   - Select input directory (dataset root containing images and labels folders)
+   - Select output directory
+   - Choose conversion format and click corresponding button
 
-3. **Set paths**
-   - Click "Select Input Directory" - Choose directory containing annotation files
-   - Click "Select Output Directory" - Choose directory to save conversion results
+4. **Dataset Visualization**
+   - Click "Dataset Visualization"
+   - Select dataset root directory
+   - Click "Generate Statistical Dashboard" for detailed analysis
 
-4. **Choose conversion format**
-   - **Detection format conversion**: Use first row buttons
-     - YOLO Detection → VOC
-     - VOC → YOLO Detection
-     - JSON → VOC
-     - YOLO Detection → JSON
-   
-   - **Segmentation format conversion**: Use second row buttons
-     - YOLO Segmentation → JSON
-     - JSON → YOLO Detection
-     - JSON → YOLO Segmentation
-     - YOLO Segmentation → YOLO Detection
+5. **Data Search**
+   - Click "Data Search"
+   - Select dataset directory
+   - Set filter conditions
+   - Click "Start Search" and export results
 
-5. **Optional: Load label dictionary**
-   - Click "Load Label Dictionary"
-   - Select label mapping file (format: `class_name class_id`)
+6. **Dataset Analysis**
+   - Click "Dataset Analysis"
+   - Select dataset directory
+   - Use various analysis functions (statistics, validation, augmentation, etc.)
 
-6. **Start conversion**
-   - Click "Start Conversion"
-   - Check log output for conversion progress
+7. **Theme Settings**
+   - Click "Settings"
+   - Select preferred theme in theme tab
+   - Click "Apply Theme"
 
 ### Basic Conversion
 1. Launch the application, select "Dataset Format Conversion"
@@ -865,12 +1154,178 @@ convert(
 
 ## 📝 Version History
 
+### [2.1.0] - 2025-01-09
+
+#### 🎉 Major Updates
+- **Application Rename**: Renamed from "Dataset Conversion Tool" to "DataForge" for a more professional identity
+- **Standard Directory Structure**: Unified adoption of `images/` and `labels/` standard dataset structure with `train/test/val` subsets
+- **Smart Format Detection**: Automatic dataset format recognition to reduce user operation complexity
+- **Theme System**: Complete theme management system with 4 built-in themes
+- **Interface Optimization**: Removed all focus outline rectangles for a cleaner visual experience
+
+#### ✨ New Features
+
+**Dataset Validation & Management**
+- New dataset validator (`dataset_validator.py`) supporting standard directory structure validation
+- Smart format detection automatically recognizing YOLO, VOC, JSON formats
+- Dataset health scoring system for comprehensive data quality assessment
+- Standard directory structure creation tools
+
+**Enhanced Data Visualization**
+- Dual visualization system: `EnhancedVisualizer` (matplotlib) and `SimpleVisualizer` (HTML/Plotly)
+- 9-chart statistical dashboard: class distribution, size statistics, density heatmaps, etc.
+- Interactive HTML reports with responsive design
+- Professional-grade data analysis charts with perfect Chinese font support
+
+**Data Search & Filtering**
+- Brand new data search panel (`search_panel.py`)
+- Multi-dimensional filtering: filename, class, size, annotation count
+- Filter result export functionality with actual file copying
+- Detailed statistical report generation and saving
+
+**Theme & Interface Optimization**
+- Complete theme management system (`theme_manager.py`)
+- 4 built-in themes: light, dark, blue, green
+- Settings panel (`settings_panel.py`) supporting theme switching and interface configuration
+- Unified Material Design style with SimSun font support
+
+#### 🔧 Major Improvements
+
+**Standard Directory Structure Support**
+- All parsers fully adapted to new standard directory structure
+- Support for automatic `train/test/val` subset recognition and processing
+- Separated image and label file management for improved data organization
+- Unified processing and validation mechanisms across subsets
+
+**User Experience Optimization**
+- Removed all interface focus outline rectangles (QTabWidget, QListWidget, etc.)
+- Perfect Chinese font support, fixed matplotlib chart text displaying as squares
+- Improved responsive layout with scroll support and dynamic adjustment
+- Unified error handling and user feedback mechanisms
+
+**Feature Enhancement**
+- Dataset analysis functionality completely reconstructed to support standard directory structure
+- Data search functionality fixed to correctly display annotation counts and statistics
+- Enhanced visualization with Chinese title and label support, added font cache refresh
+- All export functions adapted to new data structure
+
+**Technical Architecture Upgrade**
+- Unified style management system replacing old AppStyles
+- Modular theme system supporting dynamic switching
+- Improved error handling and debugging information
+- Better cross-platform compatibility and font support
+
+#### 🐛 Bug Fixes
+- **Data Visualization Crash**: Fixed program crash when selecting dataset, added delayed initialization and error handling
+- **Search Zero Annotations**: Fixed data search showing 0 annotations, updated to new validation system
+- **Analysis No Results**: Fixed dataset analysis showing no results, fully adapted to standard directory structure
+- **Chinese Font Display**: Fixed statistical dashboard text displaying as squares, added cross-platform font configuration
+- **Interface Focus Rectangles**: Removed all interface focus outline rectangles for cleaner visual experience
+- **Directory Structure Adaptation**: Fixed all functionality adaptation issues with new standard directory structure
+
+#### 📊 Dataset Format Standards
+
+**Standard Directory Structure**
+```
+dataset_name/
+├── images/
+│   ├── train/          # Training set images
+│   ├── test/           # Test set images
+│   └── val/            # Validation set images
+└── labels/
+    ├── train/          # Training set labels
+    ├── test/           # Test set labels
+    └── val/            # Validation set labels
+```
+
+**Supported Formats**
+- **Image formats**: .jpg, .jpeg, .png, .bmp, .tiff, .webp
+- **Label formats**: 
+  - YOLO: .txt (normalized coordinates)
+  - VOC: .xml (Pascal VOC format)
+  - JSON: .json (custom JSON format)
+
+#### 🎨 Interface Improvements
+- Application name updated to "DataForge v2.0"
+- Unified SimSun font support, solving Chinese display issues
+- 4 selectable themes: light, dark, blue, green
+- Removed all focus outline rectangles including tabs and list controls
+- Improved button and control styles with more modern visual effects
+
+#### 📋 Updated Usage Instructions
+
+**New Dataset Preparation Method**
+1. Create main dataset folder (e.g., `my_dataset`)
+2. Create `images` and `labels` subfolders within it
+3. Create `train`, `test`, `val` subdirectories in each subfolder
+4. Place corresponding image and label files in respective directories
+5. Ensure image and label filenames match (different extensions)
+
+**Feature Usage Recommendations**
+- Before using "Dataset Visualization", ensure dataset follows standard directory structure
+- Use "Data Search" functionality to quickly filter and export data meeting specific conditions
+- Get detailed data quality reports through "Dataset Analysis"
+- Select appropriate theme in "Settings" for optimal visual experience
+
 ### [2.0.0] - 2024-01-07
 
 #### 🎉 Major Updates
 - Complete redesign with modern interface
 - Added YOLO segmentation format support
 - Comprehensive dataset analysis and processing features
+
+#### ✨ New Features
+
+**Format Conversion**
+- New YOLO segmentation format parser (`yolo_seg_parser.py`)
+- Support for mixed bounding box and polygon annotations
+- Extended JSON parser with segmentation annotation support
+- Added 12 conversion pathways
+
+**Data Analysis**
+- Dataset statistical analyzer (`dataset_analyzer.py`)
+- Data quality validator (`dataset_validator.py`)
+- Annotation visualizer (`annotation_visualizer.py`)
+- Dataset comparator (`dataset_comparator.py`)
+- HTML report generation functionality
+
+**Data Processing**
+- Auto-repair tool (`annotation_fixer.py`)
+- Data augmentation engine (`data_augmentation.py`)
+- Dataset organizer (`dataset_organizer.py`)
+- Multi-format exporter (`dataset_exporter.py`)
+
+**Interface Improvements**
+- Unified style management system (`styles.py`)
+- Material Design interface
+- Responsive layout with scroll support
+- Three main functional panels: conversion, analysis, splitting
+
+#### 🔧 Improvements
+
+**User Experience**
+- Redesigned main window layout
+- Color-coded functional buttons
+- Real-time progress display and log output
+- Intuitive status feedback
+
+**Technical Architecture**
+- Modular core functionality design
+- Unified parser interface
+- Extensible plugin architecture
+- Improved error handling mechanisms
+
+**Performance Optimization**
+- Optimized large file processing performance
+- Improved memory usage efficiency
+- Support for batch operations
+- Asynchronous processing support
+
+#### 🐛 Bug Fixes
+- Fixed YOLO coordinate parsing precision issues
+- Fixed JSON file encoding problems
+- Fixed interface display issues on different resolutions
+- Fixed cross-platform compatibility for file path handling
 
 #### ✨ New Features
 
