@@ -14,9 +14,17 @@ import colorsys
 
 from .base_parser import ImageAnnotation
 
-# 设置中文字体支持
-plt.rcParams['font.sans-serif'] = ['SimHei', 'Microsoft YaHei', 'DejaVu Sans']
-plt.rcParams['axes.unicode_minus'] = False
+# 设置中文字体支持 - 更全面的字体配置
+import matplotlib
+matplotlib.rcParams['font.sans-serif'] = ['SimSun', 'SimHei', 'Microsoft YaHei', 'WenQuanYi Micro Hei', 'DejaVu Sans', 'Arial Unicode MS']
+matplotlib.rcParams['axes.unicode_minus'] = False
+matplotlib.rcParams['font.size'] = 10
+
+# 确保字体缓存更新
+try:
+    matplotlib.font_manager._rebuild()
+except:
+    pass
 
 class EnhancedVisualizer:
     """增强的数据可视化器"""
@@ -25,9 +33,65 @@ class EnhancedVisualizer:
         self.colors = self._generate_colors(50)
         self.class_colors = {}
         
-        # 设置matplotlib样式
-        plt.style.use('seaborn-v0_8' if 'seaborn-v0_8' in plt.style.available else 'default')
-        sns.set_palette("husl")
+        # 设置matplotlib样式 - 使用更安全的样式设置
+        try:
+            if 'seaborn-v0_8' in plt.style.available:
+                plt.style.use('seaborn-v0_8')
+            elif 'seaborn' in plt.style.available:
+                plt.style.use('seaborn')
+            else:
+                plt.style.use('default')
+            sns.set_palette("husl")
+        except Exception:
+            # 如果样式设置失败，使用默认设置
+            plt.style.use('default')
+        
+        # 强制设置中文字体
+        self._setup_chinese_fonts()
+    
+    def _setup_chinese_fonts(self):
+        """设置中文字体支持"""
+        import matplotlib.font_manager as fm
+        
+        # 尝试多种中文字体
+        chinese_fonts = [
+            'SimSun',           # 宋体 (Windows)
+            'SimHei',           # 黑体 (Windows)  
+            'Microsoft YaHei',  # 微软雅黑 (Windows)
+            'PingFang SC',      # 苹方 (macOS)
+            'Hiragino Sans GB', # 冬青黑体 (macOS)
+            'WenQuanYi Micro Hei', # 文泉驿微米黑 (Linux)
+            'Noto Sans CJK SC', # 思源黑体 (Linux)
+            'DejaVu Sans',      # 备用字体
+            'Arial Unicode MS'  # 备用字体
+        ]
+        
+        # 查找可用的中文字体
+        available_fonts = [f.name for f in fm.fontManager.ttflist]
+        selected_font = None
+        
+        for font in chinese_fonts:
+            if font in available_fonts:
+                selected_font = font
+                break
+        
+        if selected_font:
+            plt.rcParams['font.sans-serif'] = [selected_font] + chinese_fonts
+            print(f"使用字体: {selected_font}")
+        else:
+            # 如果没找到中文字体，尝试系统默认字体
+            plt.rcParams['font.sans-serif'] = chinese_fonts
+            print("未找到理想的中文字体，使用系统默认字体")
+        
+        # 设置其他字体参数
+        plt.rcParams['axes.unicode_minus'] = False
+        plt.rcParams['font.size'] = 10
+        
+        # 清除字体缓存
+        try:
+            fm._rebuild()
+        except:
+            pass
     
     def _generate_colors(self, num_colors: int) -> List[Tuple[int, int, int]]:
         """生成不同的颜色"""
@@ -67,7 +131,7 @@ class EnhancedVisualizer:
         
         # 创建多子图仪表板
         fig = plt.figure(figsize=(20, 16))
-        fig.suptitle('数据集统计仪表板', fontsize=24, fontweight='bold', color=text_color)
+        fig.suptitle('数据集统计仪表板', fontsize=24, fontweight='bold', color=text_color, fontfamily='sans-serif')
         
         # 1. 类别分布饼图
         ax1 = plt.subplot(3, 3, 1)
@@ -106,6 +170,10 @@ class EnhancedVisualizer:
         self._plot_class_cooccurrence_matrix(annotations, ax9, theme)
         
         plt.tight_layout()
+        
+        # 强制刷新字体设置
+        plt.rcParams['font.sans-serif'] = ['SimSun', 'SimHei', 'Microsoft YaHei', 'WenQuanYi Micro Hei', 'DejaVu Sans', 'Arial Unicode MS']
+        plt.rcParams['axes.unicode_minus'] = False
         
         # 保存图表
         dashboard_file = output_dir / f"statistics_dashboard_{theme}.png"
@@ -168,12 +236,13 @@ class EnhancedVisualizer:
         wedges, texts, autotexts = ax.pie(sizes, labels=labels, autopct='%1.1f%%', 
                                          colors=colors, startangle=90)
         
-        ax.set_title('类别分布', fontsize=14, fontweight='bold')
+        ax.set_title('类别分布', fontsize=14, fontweight='bold', fontfamily='sans-serif')
         
-        # 调整文本颜色
+        # 调整文本颜色和字体
         text_color = 'white' if theme == 'dark' else 'black'
         for text in texts + autotexts:
             text.set_color(text_color)
+            text.set_fontfamily('sans-serif')
     
     def _plot_class_distribution_bar(self, class_counts: Counter, ax, theme: str):
         """绘制类别分布柱状图"""
@@ -185,11 +254,11 @@ class EnhancedVisualizer:
         counts = list(class_counts.values())
         
         bars = ax.bar(range(len(labels)), counts, color=sns.color_palette("husl", len(labels)))
-        ax.set_xlabel('类别')
-        ax.set_ylabel('数量')
-        ax.set_title('类别统计', fontsize=14, fontweight='bold')
+        ax.set_xlabel('类别', fontfamily='sans-serif')
+        ax.set_ylabel('数量', fontfamily='sans-serif')
+        ax.set_title('类别统计', fontsize=14, fontweight='bold', fontfamily='sans-serif')
         ax.set_xticks(range(len(labels)))
-        ax.set_xticklabels(labels, rotation=45, ha='right')
+        ax.set_xticklabels(labels, rotation=45, ha='right', fontfamily='sans-serif')
         
         # 在柱子上显示数值
         for bar, count in zip(bars, counts):
@@ -207,9 +276,9 @@ class EnhancedVisualizer:
         
         # 创建2D直方图
         ax.hist2d(widths, heights, bins=20, cmap='Blues', alpha=0.7)
-        ax.set_xlabel('宽度 (像素)')
-        ax.set_ylabel('高度 (像素)')
-        ax.set_title('图片尺寸分布', fontsize=14, fontweight='bold')
+        ax.set_xlabel('宽度 (像素)', fontfamily='sans-serif')
+        ax.set_ylabel('高度 (像素)', fontfamily='sans-serif')
+        ax.set_title('图片尺寸分布', fontsize=14, fontweight='bold', fontfamily='sans-serif')
         
         # 添加颜色条
         plt.colorbar(ax.collections[0], ax=ax, label='图片数量')
@@ -223,9 +292,9 @@ class EnhancedVisualizer:
         widths, heights = zip(*bbox_sizes)
         
         ax.scatter(widths, heights, alpha=0.6, s=10)
-        ax.set_xlabel('标注框宽度')
-        ax.set_ylabel('标注框高度')
-        ax.set_title('标注框尺寸分布', fontsize=14, fontweight='bold')
+        ax.set_xlabel('标注框宽度', fontfamily='sans-serif')
+        ax.set_ylabel('标注框高度', fontfamily='sans-serif')
+        ax.set_title('标注框尺寸分布', fontsize=14, fontweight='bold', fontfamily='sans-serif')
         ax.grid(True, alpha=0.3)
     
     def _plot_annotations_per_image(self, annotations_per_image: List[int], ax, theme: str):
@@ -235,9 +304,9 @@ class EnhancedVisualizer:
             return
         
         ax.hist(annotations_per_image, bins=20, alpha=0.7, color='skyblue', edgecolor='black')
-        ax.set_xlabel('每张图片标注数量')
-        ax.set_ylabel('图片数量')
-        ax.set_title('标注数量分布', fontsize=14, fontweight='bold')
+        ax.set_xlabel('每张图片标注数量', fontfamily='sans-serif')
+        ax.set_ylabel('图片数量', fontfamily='sans-serif')
+        ax.set_title('标注数量分布', fontsize=14, fontweight='bold', fontfamily='sans-serif')
         ax.grid(True, alpha=0.3)
         
         # 添加统计信息
@@ -274,9 +343,9 @@ class EnhancedVisualizer:
         
         # 绘制热力图
         im = ax.imshow(density_grid, cmap='hot', interpolation='bilinear')
-        ax.set_title('标注密度热力图', fontsize=14, fontweight='bold')
-        ax.set_xlabel('图片宽度方向')
-        ax.set_ylabel('图片高度方向')
+        ax.set_title('标注密度热力图', fontsize=14, fontweight='bold', fontfamily='sans-serif')
+        ax.set_xlabel('图片宽度方向', fontfamily='sans-serif')
+        ax.set_ylabel('图片高度方向', fontfamily='sans-serif')
         
         # 添加颜色条
         plt.colorbar(im, ax=ax, label='标注密度')
@@ -288,9 +357,9 @@ class EnhancedVisualizer:
             return
         
         ax.hist(aspect_ratios, bins=30, alpha=0.7, color='lightgreen', edgecolor='black')
-        ax.set_xlabel('宽高比')
-        ax.set_ylabel('图片数量')
-        ax.set_title('图片宽高比分布', fontsize=14, fontweight='bold')
+        ax.set_xlabel('宽高比', fontfamily='sans-serif')
+        ax.set_ylabel('图片数量', fontfamily='sans-serif')
+        ax.set_title('图片宽高比分布', fontsize=14, fontweight='bold', fontfamily='sans-serif')
         ax.grid(True, alpha=0.3)
         
         # 标记常见比例
@@ -329,7 +398,10 @@ class EnhancedVisualizer:
         table.set_fontsize(10)
         table.scale(1, 2)
         
-        # 设置表格样式
+        # 设置表格样式和字体
+        for (i, j), cell in table.get_celld().items():
+            cell.set_text_props(fontfamily='sans-serif')
+        
         table[(0, 0)].set_facecolor('#4CAF50')
         table[(0, 1)].set_facecolor('#4CAF50')
         
@@ -337,7 +409,7 @@ class EnhancedVisualizer:
             table[(i, 0)].set_facecolor('#E8F5E8')
             table[(i, 1)].set_facecolor('#F5F5F5')
         
-        ax.set_title('数据集概览', fontsize=14, fontweight='bold')
+        ax.set_title('数据集概览', fontsize=14, fontweight='bold', fontfamily='sans-serif')
     
     def _plot_class_cooccurrence_matrix(self, annotations: List[ImageAnnotation], ax, theme: str):
         """绘制类别共现矩阵"""
@@ -354,7 +426,7 @@ class EnhancedVisualizer:
         
         if len(class_names) < 2:
             ax.text(0.5, 0.5, '类别数量不足', ha='center', va='center', transform=ax.transAxes)
-            ax.set_title('类别共现矩阵', fontsize=14, fontweight='bold')
+            ax.set_title('类别共现矩阵', fontsize=14, fontweight='bold', fontfamily='sans-serif')
             return
         
         # 创建共现矩阵
@@ -384,9 +456,9 @@ class EnhancedVisualizer:
                    cmap='Blues',
                    ax=ax)
         
-        ax.set_title('类别共现矩阵', fontsize=14, fontweight='bold')
-        ax.set_xlabel('类别')
-        ax.set_ylabel('类别')
+        ax.set_title('类别共现矩阵', fontsize=14, fontweight='bold', fontfamily='sans-serif')
+        ax.set_xlabel('类别', fontfamily='sans-serif')
+        ax.set_ylabel('类别', fontfamily='sans-serif')
     
     def create_interactive_visualization(self, annotations: List[ImageAnnotation], 
                                        output_dir: Path) -> None:
