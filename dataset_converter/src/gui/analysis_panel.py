@@ -16,7 +16,6 @@ from ..core.annotation_visualizer import AnnotationVisualizer
 from ..core.dataset_comparator import DatasetComparator
 from ..core.annotation_fixer import AnnotationFixer
 from ..core.dataset_exporter import DatasetExporter
-from .styles import AppStyles
 
 
 class AnalysisPanel(QWidget):
@@ -39,10 +38,6 @@ class AnalysisPanel(QWidget):
     
     def setup_ui(self):
         main_layout = QVBoxLayout(self)
-        
-        # 应用主题管理器样式
-        from .theme_manager import theme_manager
-        self.setStyleSheet(theme_manager.generate_stylesheet())
         
         # 数据集选择 - 固定在顶部
         path_layout = QHBoxLayout()

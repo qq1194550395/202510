@@ -5,7 +5,6 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QListWidget, QListWidgetItem, QFrame
 
 from .main_window import MainWindow
-from .styles import AppStyles
 
 
 class HomeWindow(QMainWindow):
@@ -18,10 +17,6 @@ class HomeWindow(QMainWindow):
 
         # 设置窗口尺寸，适应更多内容
         self.setFixedSize(1200, 800)
-        
-        # 应用主题管理器样式
-        from .theme_manager import theme_manager
-        self.setStyleSheet(theme_manager.generate_stylesheet())
 
         central = QWidget(self)
         self.setCentralWidget(central)
@@ -91,6 +86,9 @@ class HomeWindow(QMainWindow):
         # 切换逻辑
         self.menu.currentRowChanged.connect(self.on_menu_change)
         self.menu.setCurrentRow(0)
+        
+        # 在所有组件初始化完成后应用主题
+        self.apply_theme()
 
     def on_menu_change(self, idx: int):
         # 清空右侧内容
@@ -125,10 +123,6 @@ class HomeWindow(QMainWindow):
         
         panel = QWidget()
         layout = QVBoxLayout(panel)
-        
-        # 应用主题管理器样式
-        from .theme_manager import theme_manager
-        panel.setStyleSheet(theme_manager.generate_stylesheet())
         
         # 标题
         title = QLabel("数据可视化")
@@ -364,4 +358,11 @@ class HomeWindow(QMainWindow):
         
         # 生成并应用样式表
         stylesheet = theme_manager.generate_stylesheet(theme_name)
-        self.setStyleSheet(stylesheet)
+        
+        # 使用setUpdatesEnabled来减少闪烁
+        self.setUpdatesEnabled(False)
+        try:
+            self.setStyleSheet(stylesheet)
+        finally:
+            self.setUpdatesEnabled(True)
+            self.update()  # 强制重绘

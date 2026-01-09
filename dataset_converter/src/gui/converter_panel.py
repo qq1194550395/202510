@@ -17,7 +17,6 @@ from PyQt5.QtWidgets import (
 from ..core.converter import convert
 from ..utils.logger import get_logger
 from ..utils.label_utils import parse_label_map_txt
-from .styles import AppStyles
 
 
 class ConverterPanel(QWidget):
@@ -26,9 +25,6 @@ class ConverterPanel(QWidget):
         self.logger = get_logger()
 
         main_layout = QVBoxLayout(self)
-        
-        # 应用统一样式
-        self.setStyleSheet(AppStyles.get_panel_style())
 
         # 输入输出路径 - 固定在顶部
         path_group = QWidget()
@@ -38,10 +34,8 @@ class ConverterPanel(QWidget):
         input_layout = QHBoxLayout()
         self.input_label = QLabel("输入目录: 未选择")
         self.input_label.setWordWrap(True)
-        self.input_label.setStyleSheet(AppStyles.get_label_style("status"))
         btn_in = QPushButton("选择输入目录")
         btn_in.setMaximumWidth(120)
-        btn_in.setStyleSheet(AppStyles.get_button_style("default"))
         input_layout.addWidget(self.input_label, 1)
         input_layout.addWidget(btn_in)
         
@@ -49,10 +43,8 @@ class ConverterPanel(QWidget):
         output_layout = QHBoxLayout()
         self.output_label = QLabel("输出目录: 未选择")
         self.output_label.setWordWrap(True)
-        self.output_label.setStyleSheet(AppStyles.get_label_style("status"))
         btn_out = QPushButton("选择输出目录")
         btn_out.setMaximumWidth(120)
-        btn_out.setStyleSheet(AppStyles.get_button_style("default"))
         output_layout.addWidget(self.output_label, 1)
         output_layout.addWidget(btn_out)
         
@@ -76,7 +68,6 @@ class ConverterPanel(QWidget):
         # 当前格式显示
         self.label_fmt = QLabel("当前格式: YOLO检测 → VOC")
         self.label_fmt.setWordWrap(True)
-        self.label_fmt.setStyleSheet(AppStyles.get_label_style("title"))
         scroll_layout.addWidget(self.label_fmt)
         
         # 基础格式转换组
@@ -109,10 +100,8 @@ class ConverterPanel(QWidget):
         self.log_view = QTextEdit()
         self.log_view.setReadOnly(True)
         self.log_view.setMaximumHeight(150)  # 限制高度
-        self.log_view.setStyleSheet(AppStyles.get_textedit_style())
         
         log_label = QLabel("日志输出:")
-        log_label.setStyleSheet(AppStyles.get_label_style("subtitle"))
         main_layout.addWidget(log_label)
         main_layout.addWidget(self.log_view)
 
@@ -131,7 +120,6 @@ class ConverterPanel(QWidget):
         for i, (text, inp_fmt, out_fmt) in enumerate(conversions):
             btn = QPushButton(text)
             btn.setMaximumWidth(200)  # 限制按钮宽度
-            btn.setStyleSheet(AppStyles.get_button_style("default"))
             btn.clicked.connect(lambda checked, i=inp_fmt, o=out_fmt: self.set_formats(i, o))
             
             row = i // 2
@@ -148,14 +136,14 @@ class ConverterPanel(QWidget):
         # 标签字典按钮
         btn_label_map = QPushButton("加载标签字典")
         btn_label_map.setMaximumWidth(200)
-        btn_label_map.setStyleSheet(AppStyles.get_button_style("warning"))
+        btn_label_map.setProperty("buttonType", "warning")
         btn_label_map.clicked.connect(self.on_load_label_map)
         layout.addWidget(btn_label_map)
         
         # 转换按钮
         btn_convert = QPushButton("开始转换")
         btn_convert.setMaximumWidth(200)
-        btn_convert.setStyleSheet(AppStyles.get_button_style("success"))
+        btn_convert.setProperty("buttonType", "success")
         btn_convert.clicked.connect(self.on_convert)
         layout.addWidget(btn_convert)
         

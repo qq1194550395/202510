@@ -451,11 +451,29 @@ convert(
 
 ## 🎨 界面特色
 
-- **现代化设计**: Material Design风格界面
-- **统一风格**: 所有窗口采用一致的设计语言
+### 🎯 现代化设计
+- **Material Design**: 现代化的用户界面设计风格
+- **统一主题系统**: 4种内置主题（浅色、深色、蓝色、绿色）可选
+- **SimSun字体**: 统一使用宋体，完美支持中文显示
+- **无焦点虚线框**: 清洁的视觉体验，无干扰元素
+
+### ⚡ 性能优化
+- **集中式样式管理**: 统一的样式管理架构，避免冲突
+- **防闪烁机制**: 优化的渲染机制，界面切换更流畅
+- **样式继承**: 高效的样式继承系统，减少重复计算
+- **快速响应**: 优化的界面加载和切换速度
+
+### 🎨 用户体验
 - **响应式布局**: 支持滚动，适配不同屏幕尺寸
 - **直观操作**: 颜色编码的按钮（绿色=执行，橙色=警告，蓝色=主要）
 - **实时反馈**: 详细的日志输出和进度显示
+- **流畅切换**: 主题和面板切换无卡顿
+
+### 🛡️ 稳定性保障
+- **样式一致性**: 所有面板采用统一的设计语言
+- **无界面闪烁**: 彻底解决界面异常显示问题
+- **稳定渲染**: 优化的样式应用机制
+- **长期稳定**: 经过优化的界面架构，确保长时间使用稳定
 
 ## 📝 更新日志
 
@@ -467,6 +485,8 @@ convert(
 - **智能格式检测**: 自动识别数据集格式，减少用户操作复杂度
 - **主题系统**: 完整的主题管理系统，支持4种内置主题
 - **界面优化**: 移除所有焦点虚线框，提供更清洁的视觉体验
+- **UI架构重构**: 全面优化界面渲染机制，彻底解决界面闪烁问题
+- **数据集重新划分**: 支持对已有数据集进行重新划分（如8:1:1 → 6:2:2）
 
 #### ✨ 新增功能
 
@@ -493,6 +513,18 @@ convert(
 - 4种内置主题：浅色、深色、蓝色、绿色
 - 设置面板 (`settings_panel.py`) 支持主题切换和界面配置
 - 统一的Material Design风格，使用SimSun(宋体)字体
+
+**UI架构重构**
+- 集中式样式管理：统一由主窗口管理所有样式
+- 样式继承机制：子面板自动继承主窗口样式
+- 防闪烁优化：使用`setUpdatesEnabled`机制防止界面闪烁
+- 渲染性能提升：优化样式应用时机和重绘机制
+
+**数据集重新划分**
+- 智能检测标准目录结构数据集
+- 支持重新划分已有数据集比例（如8:1:1 → 6:2:2）
+- 自动合并所有子集后按新比例重新分配
+- 完整的数据验证和错误处理机制
 
 #### 🔧 重大改进
 
@@ -521,6 +553,9 @@ convert(
 - 更好的跨平台兼容性和字体支持
 
 #### 🐛 修复问题
+- **界面闪烁异常**: 彻底解决界面上方出现三个点等异常显示问题
+- **样式系统冲突**: 统一样式管理，移除新旧样式系统混用导致的冲突
+- **UI渲染优化**: 优化样式应用机制，防止界面加载时的闪烁和延迟
 - **数据可视化闪退**: 修复选择数据集后程序闪退的问题，添加延迟初始化和错误处理
 - **搜索功能零标注**: 修复数据搜索功能显示0个标注的问题，更新为新的验证系统
 - **分析功能无结果**: 修复数据集分析功能无结果的问题，完全适配标准目录结构
@@ -1146,11 +1181,29 @@ convert(
 
 ## 🎨 Interface Features
 
-- **Modern design**: Material Design style interface
-- **Unified style**: Consistent design language across all windows
-- **Responsive layout**: Scroll support, adapts to different screen sizes
-- **Intuitive operation**: Color-coded buttons (green=execute, orange=warning, blue=primary)
-- **Real-time feedback**: Detailed log output and progress display
+### 🎯 Modern Design
+- **Material Design**: Modern user interface design style
+- **Unified Theme System**: 4 built-in themes (light, dark, blue, green) available
+- **SimSun Font**: Unified use of SimSun font with perfect Chinese character support
+- **No Focus Rectangles**: Clean visual experience without distracting elements
+
+### ⚡ Performance Optimization
+- **Centralized Style Management**: Unified style management architecture avoiding conflicts
+- **Anti-Flicker Mechanism**: Optimized rendering mechanism for smoother interface transitions
+- **Style Inheritance**: Efficient style inheritance system reducing redundant calculations
+- **Fast Response**: Optimized interface loading and switching speed
+
+### 🎨 User Experience
+- **Responsive Layout**: Scroll support, adapts to different screen sizes
+- **Intuitive Operation**: Color-coded buttons (green=execute, orange=warning, blue=primary)
+- **Real-time Feedback**: Detailed log output and progress display
+- **Smooth Transitions**: Theme and panel switching without lag
+
+### 🛡️ Stability Assurance
+- **Style Consistency**: All panels adopt unified design language
+- **No Interface Flicker**: Completely resolved interface anomaly display issues
+- **Stable Rendering**: Optimized style application mechanism
+- **Long-term Stability**: Optimized interface architecture ensuring stable long-term use
 
 ## 📝 Version History
 
@@ -1162,6 +1215,8 @@ convert(
 - **Smart Format Detection**: Automatic dataset format recognition to reduce user operation complexity
 - **Theme System**: Complete theme management system with 4 built-in themes
 - **Interface Optimization**: Removed all focus outline rectangles for a cleaner visual experience
+- **UI Architecture Refactoring**: Comprehensive interface rendering mechanism optimization, completely resolved interface flicker issues
+- **Dataset Re-splitting**: Support for re-splitting existing datasets (e.g., 8:1:1 → 6:2:2)
 
 #### ✨ New Features
 

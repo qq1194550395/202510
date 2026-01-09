@@ -26,10 +26,6 @@ class SplittingPanel(QWidget):
         super().__init__(parent)
 
         main_layout = QVBoxLayout(self)
-        
-        # 应用主题样式
-        from .theme_manager import theme_manager
-        self.setStyleSheet(theme_manager.generate_stylesheet())
 
         # 创建滚动区域
         scroll_area = QScrollArea()

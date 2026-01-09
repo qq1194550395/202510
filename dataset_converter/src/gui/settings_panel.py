@@ -11,7 +11,6 @@ from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtGui import QFont, QColor, QPalette
 
 from .theme_manager import theme_manager
-from .styles import AppStyles
 
 
 class SettingsPanel(QWidget):
@@ -481,9 +480,9 @@ class SettingsPanel(QWidget):
     
     def apply_styles(self):
         """应用样式"""
-        self.setStyleSheet(AppStyles.get_panel_style())
+        # 样式由主窗口统一管理，这里只设置按钮属性
         
-        # 为按钮应用样式
-        self.apply_btn.setStyleSheet(AppStyles.get_button_style("success"))
-        self.reset_btn.setStyleSheet(AppStyles.get_button_style("warning"))
-        self.preview_btn.setStyleSheet(AppStyles.get_button_style("primary"))
+        # 为按钮设置属性
+        self.apply_btn.setProperty("buttonType", "success")
+        self.reset_btn.setProperty("buttonType", "warning")
+        self.preview_btn.setProperty("buttonType", "primary")

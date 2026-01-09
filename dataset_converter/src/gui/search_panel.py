@@ -13,7 +13,6 @@ from PyQt5.QtCore import Qt
 
 from ..core.base_parser import ImageAnnotation
 from ..core.converter import PARSERS
-from .styles import AppStyles
 
 
 class SearchPanel(QWidget):
@@ -153,10 +152,6 @@ class SearchPanel(QWidget):
     
     def apply_styles(self):
         """应用样式"""
-        # 使用主题管理器样式
-        from .theme_manager import theme_manager
-        self.setStyleSheet(theme_manager.generate_stylesheet())
-        
         # 为按钮设置属性
         for btn in self.findChildren(QPushButton):
             if "导出" in btn.text() or "生成" in btn.text():
